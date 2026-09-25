@@ -1,2 +1,2 @@
-study_id,name,stage,start_date,end_date,notes
-ST-2026-001,合成示例：水稻氮肥用量试验,田间试验,2026-04-10,2026-09-20,虚构数据，仅用于 Cercis 黄金对照验收
+study_id,name,crop,design,location,start_date,end_date,notes
+ST-2026-001,合成示例：水稻四因素田间试验,水稻,随机区组,合成试验站（虚构）,2026-04-10,2026-09-25,虚构数据，用于 Cercis 黄金对照验收：4 因素 × 3 区组 × 3 时期 × 9 指标

@@ -1,24 +1,23 @@
 #!/usr/bin/env Rscript
-# S6 黄金对照验收：**独立复算**（R 不认识 Cercis，只读导出的 CSV）
+# 黄金对照验收：**独立复算**（R 不认识 Cercis，只读导出的 CSV）
 #
-# 用法：Rscript verify/verify.R [产物目录]
-#   默认读 ../build/out，写 ../build/verify/r_results.json
-#
+# 数据集：4 因素 × 16 处理 × 3 区组 × 3 时期 × 7 指标
 # 复算内容：
 #   1. 各表行数、观测缺失数、编号唯一性
-#   2. 每个指标的 原始/更正后 统计量（count / mean / min / max）
-#   3. 按处理分组的均值（观测 → 样本 → 实验单元 → 处理）
-#   4. 平行样极差（同样本 + 同指标 + 同测定日期多次测定的极差）
-#   5. 长表 ↔ 宽表一致性，以及宽表的"形状"检查
-#   6. 更正是否只改分析口径、不动原始值
-#   7. 导出的说明书是否包含列字典与复现命令
+#   2. 每个指标的 原始/更正后 统计量
+#   3. **时期 × 指标** 的均值（多时期）
+#   4. **因素 × 水平 × 指标** 的边际均值（多因素，其余因素被平均掉）
+#   5. 平行样极差；长表 ↔ 宽表一致性；宽表形状
+#   6. 更正语义：原始值保留、分析口径用新值
+#   7. 导出说明书是否含列字典与复现命令
+#
+# 用法：Rscript verify/verify.R [产物目录]
 
 suppressMessages(library(jsonlite))
 
 args <- commandArgs(trailingOnly = TRUE)
 here <- normalizePath(dirname(sub("--file=", "", grep("--file=", commandArgs(), value = TRUE))))
-out_dir <- if (length(args) >= 1) args[1] else file.path(here, "..", "build", "out")
-out_dir <- normalizePath(out_dir)
+out_dir <- if (length(args) >= 1) normalizePath(args[1]) else file.path(here, "..", "build", "out")
 long_dir <- file.path(out_dir, "long")
 wide_dir <- file.path(out_dir, "wide")
 verify_dir <- file.path(here, "..", "build", "verify")
@@ -29,13 +28,10 @@ read_table <- function(name, dir = long_dir) {
   if (!file.exists(path)) stop("缺少导出文件：", path)
   read.csv(path, colClasses = "character", check.names = FALSE, encoding = "UTF-8")
 }
-
 num <- function(x) {
-  x <- trimws(x)
-  x[x == "" | x == "NA"] <- NA
+  x <- trimws(x); x[x == "" | x == "NA"] <- NA
   suppressWarnings(as.numeric(x))
 }
-
 stats_of <- function(v) {
   v <- v[!is.na(v)]
   list(count = length(v),
@@ -45,6 +41,9 @@ stats_of <- function(v) {
 }
 
 studies <- read_table("studies")
+factors <- read_table("factors")
+treatments <- read_table("treatments")
+treatment_factors <- read_table("treatment_factors")
 units <- read_table("units")
 events <- read_table("events")
 samples <- read_table("samples")
@@ -52,61 +51,70 @@ obs <- read_table("observations")
 corrections <- read_table("corrections")
 
 obs$value <- num(obs$value_num)
-
-# 更正值按 obs_id 覆盖到"分析口径"上（原始列保持不动）
 fix <- setNames(num(corrections$new_value), corrections$target_id)
 obs$value_corrected <- obs$value
 hit <- !is.na(fix[obs$obs_id])
 obs$value_corrected[hit] <- fix[obs$obs_id][hit]
 
-traits <- c("soil_n_kg_ha", "height_cm", "spad", "yield_kg_plot")
+traits <- sort(unique(obs$trait_id))
 raw <- lapply(traits, function(t) stats_of(obs$value[obs$trait_id == t]))
 corrected <- lapply(traits, function(t) stats_of(obs$value_corrected[obs$trait_id == t]))
 names(raw) <- names(corrected) <- traits
 
-# 按处理分组的均值：观测 → 样本 → 实验单元 → 处理
-joined <- merge(obs, samples[, c("sample_id", "unit_id")], by = "sample_id", all.x = TRUE)
-joined <- merge(joined, units[, c("unit_id", "treatment_id")], by = "unit_id", all.x = TRUE)
-treatment_means <- lapply(traits, function(t) {
-  sub <- joined[joined$trait_id == t, ]
-  vals <- lapply(c("T0", "T1", "T2", "T3"), function(trt) {
-    v <- sub$value[sub$treatment_id == trt]
-    v <- v[!is.na(v)]
-    if (length(v)) round(mean(v), 4) else NULL
-  })
-  names(vals) <- c("T0", "T1", "T2", "T3")
-  vals
-})
-names(treatment_means) <- traits
+# 观测 → 样本 → 事件（时期）/ 小区 → 处理 → 因素水平
+long <- merge(obs, samples[, c("sample_id", "unit_id", "event_id")], by = "sample_id", all.x = TRUE)
+long <- merge(long, events[, c("event_id", "stage")], by = "event_id", all.x = TRUE)
+long <- merge(long, units[, c("unit_id", "treatment_id")], by = "unit_id", all.x = TRUE)
+long <- merge(long, treatment_factors[, c("treatment_id", "factor_id", "level")],
+              by = "treatment_id", all.x = TRUE, allow.cartesian = TRUE)
 
-# 平行样极差（键 = 样本 | 指标 | 测定日期，与生成器的地面真值同格式）
+# 时期 × 指标
+by_stage <- list()
+for (t in traits) {
+  for (st in unique(long$stage[long$trait_id == t])) {
+    v <- long$value[long$trait_id == t & long$stage == st]
+    by_stage[[paste(t, st, sep = "|")]] <- if (length(v[!is.na(v)])) round(mean(v, na.rm = TRUE), 4) else NULL
+  }
+}
+
+# 因素 × 水平 × 指标（边际均值）
+by_factor <- list()
+for (i in seq_len(nrow(factors))) {
+  fid <- factors$factor_id[i]
+  for (lv in strsplit(factors$levels[i], ";")[[1]]) {
+    for (t in traits) {
+      v <- long$value[long$factor_id == fid & long$level == lv & long$trait_id == t]
+      v <- v[!is.na(v)]
+      if (length(v)) by_factor[[paste0(fid, "=", lv, "|", t)]] <- round(mean(v), 4)
+    }
+  }
+}
+
+# 平行样极差
 key <- paste(obs$sample_id, obs$trait_id, obs$measured_at, sep = "|")
 groups <- split(obs$value, key)
 parallel <- groups[vapply(groups, function(v) sum(!is.na(v)) > 1, logical(1))]
 parallel_ranges <- lapply(parallel, function(v) round(max(v, na.rm = TRUE) - min(v, na.rm = TRUE), 4))
 
-# 宽表：形状（一样本一行、指标成列）+ 与长表的一致性 + 冲突计数
+# 宽表：形状 + 一致性
 wide <- read.csv(file.path(wide_dir, "observations-wide.csv"),
                  colClasses = "character", check.names = FALSE, encoding = "UTF-8")
 trait_cols <- intersect(traits, names(wide))
 wide_values <- as.data.frame(lapply(wide[trait_cols], num), check.names = FALSE)
 filled_per_row <- rowSums(!is.na(wide_values))
-
 wide_shape <- list(
   rows = nrow(wide),
   trait_columns = length(trait_cols),
   rows_with_multiple_values = sum(filled_per_row > 1)
 )
-# 逐（样本，指标）统计长表里的非空取值个数，多于 1 就是被合并掉的冲突
 pair_keys <- paste(obs$sample_id, obs$trait_id, sep = "|")
 pair_counts <- tapply(obs$value, pair_keys, function(v) sum(!is.na(v)))
 wide_shape$conflicts <- sum(pair_counts > 1)
 
-# 一致性：宽表保留的是"该样本该指标的最后一个非空值"（平行样会覆盖前一次）
 wide_ok <- TRUE
 for (i in seq_len(nrow(wide))) {
   sid <- wide$sample_id[i]
-  if (!(sid %in% obs$sample_id)) { wide_ok <- FALSE; break }   # 宽表不能凭空多出样本
+  if (!(sid %in% obs$sample_id)) { wide_ok <- FALSE; break }
   for (tc in trait_cols) {
     wv <- wide_values[[tc]][i]
     lv <- obs$value[obs$sample_id == sid & obs$trait_id == tc]
@@ -118,12 +126,9 @@ for (i in seq_len(nrow(wide))) {
   }
   if (!wide_ok) break
 }
-# 反过来也要查：长表里出现过的样本，宽表里都该有一行
-if (wide_ok) {
-  wide_ok <- setequal(unique(obs$sample_id), wide$sample_id)
-}
+if (wide_ok) wide_ok <- setequal(unique(obs$sample_id), wide$sample_id)
 
-# 更正：原始值必须还在，分析口径必须换成新值
+# 更正语义
 correction_check <- list(
   count = nrow(corrections),
   target_id = if (nrow(corrections)) corrections$target_id[1] else NULL,
@@ -138,7 +143,7 @@ correction_check <- list(
   } else NA
 )
 
-# 说明书：列字典 + 复现命令
+# 说明书
 readme_files <- c(
   list.files(long_dir, pattern = "\\.README\\.md$", full.names = TRUE),
   list.files(wide_dir, pattern = "\\.README\\.md$", full.names = TRUE)
@@ -156,8 +161,9 @@ readme_check <- list(
 results <- list(
   r_version = R.version.string,
   tables = list(
-    studies = nrow(studies), units = nrow(units), events = nrow(events),
-    samples = nrow(samples), observations = nrow(obs)
+    studies = nrow(studies), factors = nrow(factors), treatments = nrow(treatments),
+    treatment_factors = nrow(treatment_factors), units = nrow(units),
+    events = nrow(events), samples = nrow(samples), observations = nrow(obs)
   ),
   observations = list(
     total = nrow(obs),
@@ -166,7 +172,8 @@ results <- list(
   ),
   raw = raw,
   corrected = corrected,
-  treatment_means_raw = treatment_means,
+  by_stage = by_stage,
+  by_factor = by_factor,
   parallel_ranges = parallel_ranges,
   wide = c(wide_shape, list(consistent_with_long = wide_ok)),
   correction = correction_check,
@@ -177,14 +184,11 @@ dest <- file.path(verify_dir, "r_results.json")
 write(toJSON(results, auto_unbox = TRUE, pretty = TRUE, null = "null"), file = dest)
 
 cat("R 复算完成 →", dest, "\n")
-cat(sprintf("  观测：%d 行，缺失 %d，编号唯一 %d\n",
-            results$observations$total, results$observations$missing_value,
-            results$observations$unique_obs_id))
-for (t in traits) {
-  cat(sprintf("  %-14s 原始均值 %-8s → 更正后 %-8s（n=%d）\n",
-              t, format(results$raw[[t]]$mean), format(results$corrected[[t]]$mean),
-              results$raw[[t]]$count))
-}
-cat(sprintf("  平行样：%d 组；宽表：%d 行 × %d 个指标列（多值行 %d，与长表一致 %s）\n",
-            length(results$parallel_ranges), wide_shape$rows, wide_shape$trait_columns,
-            wide_shape$rows_with_multiple_values, wide_ok))
+cat(sprintf("  表：%d 张；观测 %d 条（缺失 %d、编号唯一 %d）\n",
+            length(results$tables), results$observations$total,
+            results$observations$missing_value, results$observations$unique_obs_id))
+cat(sprintf("  指标 %d 个 × 时期分组 %d 个 × 因素水平分组 %d 个\n",
+            length(traits), length(by_stage), length(by_factor)))
+cat(sprintf("  平行样 %d 组；宽表 %d 行 × %d 列（冲突 %d、与长表一致 %s）\n",
+            length(parallel_ranges), wide_shape$rows, wide_shape$trait_columns,
+            wide_shape$conflicts, wide_ok))

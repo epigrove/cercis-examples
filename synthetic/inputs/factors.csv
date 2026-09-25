@@ -1,0 +1,5 @@
+factor_id,name,kind,unit,levels,notes
+nitrogen,氮肥,定量,kg/ha,0;180,
+phosphorus,磷肥,定量,kg/ha,0;60,
+density,密度,定量,万株/ha,15;22.5,
+variety,品种,定性,,V1;V2,
