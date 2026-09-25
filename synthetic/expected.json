@@ -95,6 +95,11 @@
     "S-019|spad|2026-07-20": 1.2,
     "S-020|spad|2026-07-20": 1.2
   },
+  "wide": {
+    "rows": 24,
+    "trait_columns": 4,
+    "conflicts": 4
+  },
   "correction": {
     "count": 1,
     "target_id": "OB-0017",

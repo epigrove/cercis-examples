@@ -253,6 +253,24 @@ def expected(units, samples, obs, corrections):
     parallel = {f"{k[0]}|{k[1]}|{k[2]}": round(max(v) - min(v), 4)
                 for k, v in pairs.items() if len(v) > 1}
 
+    # 宽表形态的期望：一样本一行、指标成列（行身份 = sample_id）
+    by_sample = {}
+    conflicts = 0
+    for r in obs:
+        cell = by_sample.setdefault(r["sample_id"], {})
+        if r["value_num"] == "":
+            continue
+        if cell.get(r["trait_id"]):
+            conflicts += 1          # 同一格被第二次写入（平行样）
+        cell[r["trait_id"]] = r["value_num"]
+    wide = {
+        # 一行 = 长表里出现过的样本（哪怕它的值全是空的：
+        # "测了但值是空的"本身就是要保留的信息，缺失值留空不写 NA）
+        "rows": len(by_sample),
+        "trait_columns": len(traits),
+        "conflicts": conflicts,
+    }
+
     return {
         "tables": {
             "studies": 1,
@@ -270,6 +288,7 @@ def expected(units, samples, obs, corrections):
         "corrected": corrected,
         "treatment_means_raw": groups,
         "parallel_ranges": parallel,
+        "wide": wide,
         "correction": {
             "count": len(corrections),
             "target_id": corrections[0]["target_id"] if corrections else None,

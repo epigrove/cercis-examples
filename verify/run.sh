@@ -139,16 +139,12 @@ run "$KERNEL" query "$PROJECT" --table observations \
 # ── 6. 导出（长表 / 宽表 / 说明书）──────────────────────────────────────
 say ""
 say "── 6. 导出 ──"
-for t in studies units events samples observations; do
+# 更正表（corrections）是内核自动建的系统表，不在模板里——
+# S6 发现 F-01 修复后，模板外的表也能正常导出，这里不再需要绕过。
+for t in studies units events samples corrections observations; do
   run "$TP" export --project "$PROJECT" --table "$t" --out "$OUT/long" \
       --format csv --readme --allow-write --cercis "$KERNEL" --json
 done
-
-# 更正表是内核自动建的**系统表**，不在模板里 → 目前 query/export 会拒绝（发现 F-01）。
-# 这里直接复制项目内的文件：R 校验读"项目原始文件"反而更独立。
-{ echo; echo "\$ cp tables/corrections.csv → $OUT/long/corrections.csv   # 见报告 F-01"; } >> "$LOG"
-cp "$PROJECT/tables/corrections.csv" "$OUT/long/corrections.csv"
-say "    corrections：模板外系统表，直接复制项目文件（发现 F-01，见报告）"
 run "$TP" export --project "$PROJECT" --table observations --out "$OUT/wide" \
     --format csv --wide trait_id --value value_num --readme \
     --allow-write --cercis "$KERNEL" --json

@@ -84,7 +84,9 @@ def main():
 
     # 7. 宽表
     c.eq("宽表与长表一致", r["wide"]["consistent_with_long"], True)
-    c.eq("宽表行数 = 长表行数", r["wide"]["rows"], exp["observations"]["total"])
+    c.eq("宽表行数（一样本一行）", r["wide"]["rows"], exp["wide"]["rows"])
+    c.eq("宽表指标列数", r["wide"]["trait_columns"], exp["wide"]["trait_columns"])
+    c.eq("宽表被合并的格数（平行样）", r["wide"]["conflicts"], exp["wide"]["conflicts"])
 
     # 8. 说明书
     readme = r["readme"]

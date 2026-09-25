@@ -85,34 +85,42 @@ groups <- split(obs$value, key)
 parallel <- groups[vapply(groups, function(v) sum(!is.na(v)) > 1, logical(1))]
 parallel_ranges <- lapply(parallel, function(v) round(max(v, na.rm = TRUE) - min(v, na.rm = TRUE), 4))
 
-# 宽表：形状 + 与长表的一致性
+# 宽表：形状（一样本一行、指标成列）+ 与长表的一致性 + 冲突计数
 wide <- read.csv(file.path(wide_dir, "observations-wide.csv"),
                  colClasses = "character", check.names = FALSE, encoding = "UTF-8")
 trait_cols <- intersect(traits, names(wide))
 wide_values <- as.data.frame(lapply(wide[trait_cols], num), check.names = FALSE)
 filled_per_row <- rowSums(!is.na(wide_values))
 
-# 一行只应有一个指标的读数（说明宽表行身份含 obs_id，见报告 F-04）
 wide_shape <- list(
   rows = nrow(wide),
   trait_columns = length(trait_cols),
   rows_with_multiple_values = sum(filled_per_row > 1)
 )
+# 逐（样本，指标）统计长表里的非空取值个数，多于 1 就是被合并掉的冲突
+pair_keys <- paste(obs$sample_id, obs$trait_id, sep = "|")
+pair_counts <- tapply(obs$value, pair_keys, function(v) sum(!is.na(v)))
+wide_shape$conflicts <- sum(pair_counts > 1)
 
+# 一致性：宽表保留的是"该样本该指标的最后一个非空值"（平行样会覆盖前一次）
 wide_ok <- TRUE
 for (i in seq_len(nrow(wide))) {
-  oid <- wide$obs_id[i]
-  long_row <- obs[obs$obs_id == oid, ]
-  if (nrow(long_row) == 0) { wide_ok <- FALSE; break }
+  sid <- wide$sample_id[i]
+  if (!(sid %in% obs$sample_id)) { wide_ok <- FALSE; break }   # 宽表不能凭空多出样本
   for (tc in trait_cols) {
     wv <- wide_values[[tc]][i]
-    lv <- long_row$value[long_row$trait_id == tc]
-    if (is.na(wv)) {
-      if (length(lv) == 1 && !is.na(lv)) { wide_ok <- FALSE }
-    } else if (length(lv) != 1 || is.na(lv) || abs(wv - lv) > 1e-9) {
-      wide_ok <- FALSE
-    }
+    lv <- obs$value[obs$sample_id == sid & obs$trait_id == tc]
+    lv <- lv[!is.na(lv)]
+    expect <- if (length(lv)) lv[length(lv)] else NA
+    same <- (is.na(wv) && is.na(expect)) ||
+      (!is.na(wv) && !is.na(expect) && abs(wv - expect) < 1e-9)
+    if (!same) { wide_ok <- FALSE; break }
   }
+  if (!wide_ok) break
+}
+# 反过来也要查：长表里出现过的样本，宽表里都该有一行
+if (wide_ok) {
+  wide_ok <- setequal(unique(obs$sample_id), wide$sample_id)
 }
 
 # 更正：原始值必须还在，分析口径必须换成新值
