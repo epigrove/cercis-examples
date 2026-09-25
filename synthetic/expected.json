@@ -17,43 +17,43 @@
   "raw": {
     "plant_height_cm": {
       "count": 93,
-      "mean": 64.8269,
-      "min": 57.7,
+      "mean": 64.8645,
+      "min": 57.8,
       "max": 71.8
     },
     "spad": {
       "count": 105,
-      "mean": 35.3695,
-      "min": 30.9,
-      "max": 38.7
+      "mean": 35.3838,
+      "min": 30.8,
+      "max": 38.6
     },
     "tiller_number": {
       "count": 47,
       "mean": 11.4638,
-      "min": 9.2,
-      "max": 13.9
+      "min": 9.3,
+      "max": 13.8
     },
     "leaf_area_cm2": {
       "count": 47,
-      "mean": 491.6319,
-      "min": 418.8,
-      "max": 564.3
+      "mean": 491.8447,
+      "min": 418.9,
+      "max": 565.8
     },
     "grain_yield_kg_plot": {
       "count": 47,
-      "mean": 7.6362,
+      "mean": 7.6447,
       "min": 5.7,
       "max": 9.8
     },
     "thousand_grain_weight_g": {
       "count": 47,
-      "mean": 25.5596,
-      "min": 24.1,
+      "mean": 25.5681,
+      "min": 24.2,
       "max": 27.1
     },
     "biomass_kg_plot": {
       "count": 47,
-      "mean": 13.7638,
+      "mean": 13.7681,
       "min": 11.8,
       "max": 15.8
     }
@@ -61,128 +61,128 @@
   "corrected": {
     "plant_height_cm": {
       "count": 93,
-      "mean": 64.8269,
-      "min": 57.7,
+      "mean": 64.8645,
+      "min": 57.8,
       "max": 71.8
     },
     "spad": {
       "count": 105,
-      "mean": 35.4076,
+      "mean": 35.4219,
       "min": 32.5,
-      "max": 38.7
+      "max": 38.6
     },
     "tiller_number": {
       "count": 47,
       "mean": 11.4638,
-      "min": 9.2,
-      "max": 13.9
+      "min": 9.3,
+      "max": 13.8
     },
     "leaf_area_cm2": {
       "count": 47,
-      "mean": 491.6319,
-      "min": 418.8,
-      "max": 564.3
+      "mean": 491.8447,
+      "min": 418.9,
+      "max": 565.8
     },
     "grain_yield_kg_plot": {
       "count": 47,
-      "mean": 7.6362,
+      "mean": 7.6447,
       "min": 5.7,
       "max": 9.8
     },
     "thousand_grain_weight_g": {
       "count": 47,
-      "mean": 25.5596,
-      "min": 24.1,
+      "mean": 25.5681,
+      "min": 24.2,
       "max": 27.1
     },
     "biomass_kg_plot": {
       "count": 47,
-      "mean": 13.7638,
+      "mean": 13.7681,
       "min": 11.8,
       "max": 15.8
     }
   },
   "by_stage": {
-    "plant_height_cm|抽穗期": 64.9085,
-    "plant_height_cm|分蘖期": 64.7435,
-    "spad|抽穗期": 35.2617,
-    "spad|分蘖期": 35.4569,
+    "plant_height_cm|分蘖期": 64.7891,
+    "plant_height_cm|抽穗期": 64.9383,
+    "spad|分蘖期": 35.4724,
+    "spad|抽穗期": 35.2745,
     "tiller_number|分蘖期": 11.4638,
-    "leaf_area_cm2|抽穗期": 491.6319,
-    "grain_yield_kg_plot|成熟期": 7.6362,
-    "thousand_grain_weight_g|成熟期": 25.5596,
-    "biomass_kg_plot|成熟期": 13.7638
+    "leaf_area_cm2|抽穗期": 491.8447,
+    "grain_yield_kg_plot|成熟期": 7.6447,
+    "thousand_grain_weight_g|成熟期": 25.5681,
+    "biomass_kg_plot|成熟期": 13.7681
   },
   "by_factor": {
-    "nitrogen=0|plant_height_cm": 61.7826,
-    "nitrogen=0|spad": 33.7273,
-    "nitrogen=0|tiller_number": 10.8917,
-    "nitrogen=0|leaf_area_cm2": 447.125,
-    "nitrogen=0|grain_yield_kg_plot": 6.775,
-    "nitrogen=0|thousand_grain_weight_g": 25.113,
-    "nitrogen=0|biomass_kg_plot": 12.7391,
-    "nitrogen=180|plant_height_cm": 67.8064,
-    "nitrogen=180|spad": 37.176,
-    "nitrogen=180|tiller_number": 12.0609,
-    "nitrogen=180|leaf_area_cm2": 538.0739,
-    "nitrogen=180|grain_yield_kg_plot": 8.5348,
-    "nitrogen=180|thousand_grain_weight_g": 25.9875,
-    "nitrogen=180|biomass_kg_plot": 14.7458,
-    "phosphorus=0|plant_height_cm": 64.0478,
-    "phosphorus=0|spad": 35.0364,
+    "nitrogen=0|plant_height_cm": 61.8717,
+    "nitrogen=0|spad": 33.7691,
+    "nitrogen=0|tiller_number": 10.9042,
+    "nitrogen=0|leaf_area_cm2": 447.6875,
+    "nitrogen=0|grain_yield_kg_plot": 6.7833,
+    "nitrogen=0|thousand_grain_weight_g": 25.1391,
+    "nitrogen=0|biomass_kg_plot": 12.7522,
+    "nitrogen=180|plant_height_cm": 67.7936,
+    "nitrogen=180|spad": 37.16,
+    "nitrogen=180|tiller_number": 12.0478,
+    "nitrogen=180|leaf_area_cm2": 537.9217,
+    "nitrogen=180|grain_yield_kg_plot": 8.5435,
+    "nitrogen=180|thousand_grain_weight_g": 25.9792,
+    "nitrogen=180|biomass_kg_plot": 14.7417,
+    "phosphorus=0|plant_height_cm": 64.0674,
+    "phosphorus=0|spad": 35.0382,
     "phosphorus=0|tiller_number": 11.2458,
-    "phosphorus=0|leaf_area_cm2": 478.0087,
-    "phosphorus=0|grain_yield_kg_plot": 7.3708,
-    "phosphorus=0|thousand_grain_weight_g": 25.4304,
+    "phosphorus=0|leaf_area_cm2": 478.0957,
+    "phosphorus=0|grain_yield_kg_plot": 7.375,
+    "phosphorus=0|thousand_grain_weight_g": 25.4348,
     "phosphorus=0|biomass_kg_plot": 13.3958,
-    "phosphorus=60|plant_height_cm": 65.5894,
-    "phosphorus=60|spad": 35.736,
+    "phosphorus=60|plant_height_cm": 65.6447,
+    "phosphorus=60|spad": 35.764,
     "phosphorus=60|tiller_number": 11.6913,
-    "phosphorus=60|leaf_area_cm2": 504.6875,
-    "phosphorus=60|grain_yield_kg_plot": 7.913,
-    "phosphorus=60|thousand_grain_weight_g": 25.6833,
-    "phosphorus=60|biomass_kg_plot": 14.1478,
-    "density=15|plant_height_cm": 63.8761,
-    "density=15|spad": 35.5538,
-    "density=15|tiller_number": 12.2739,
-    "density=15|leaf_area_cm2": 480.5957,
-    "density=15|grain_yield_kg_plot": 7.7783,
-    "density=15|thousand_grain_weight_g": 25.6375,
-    "density=15|biomass_kg_plot": 13.6,
-    "density=22.5|plant_height_cm": 65.7574,
-    "density=22.5|spad": 35.1887,
-    "density=22.5|tiller_number": 10.6875,
-    "density=22.5|leaf_area_cm2": 502.2083,
-    "density=22.5|grain_yield_kg_plot": 7.5,
-    "density=22.5|thousand_grain_weight_g": 25.4783,
-    "density=22.5|biomass_kg_plot": 13.9348,
-    "variety=V1|plant_height_cm": 66.8468,
-    "variety=V1|spad": 35.1151,
-    "variety=V1|tiller_number": 10.9565,
+    "phosphorus=60|leaf_area_cm2": 505.0208,
+    "phosphorus=60|grain_yield_kg_plot": 7.9261,
+    "phosphorus=60|thousand_grain_weight_g": 25.6958,
+    "phosphorus=60|biomass_kg_plot": 14.1565,
+    "density=15|plant_height_cm": 63.8696,
+    "density=15|spad": 35.5442,
+    "density=15|tiller_number": 12.2565,
+    "density=15|leaf_area_cm2": 480.5087,
+    "density=15|grain_yield_kg_plot": 7.787,
+    "density=15|thousand_grain_weight_g": 25.625,
+    "density=15|biomass_kg_plot": 13.5958,
+    "density=22.5|plant_height_cm": 65.8383,
+    "density=22.5|spad": 35.2264,
+    "density=22.5|tiller_number": 10.7042,
+    "density=22.5|leaf_area_cm2": 502.7083,
+    "density=22.5|grain_yield_kg_plot": 7.5083,
+    "density=22.5|thousand_grain_weight_g": 25.5087,
+    "density=22.5|biomass_kg_plot": 13.9478,
+    "variety=V1|plant_height_cm": 66.8532,
+    "variety=V1|spad": 35.1113,
+    "variety=V1|tiller_number": 10.9609,
     "variety=V1|leaf_area_cm2": 487.3958,
-    "variety=V1|grain_yield_kg_plot": 7.225,
-    "variety=V1|thousand_grain_weight_g": 25.0348,
-    "variety=V1|biomass_kg_plot": 13.5348,
-    "variety=V2|plant_height_cm": 62.763,
-    "variety=V2|spad": 35.6288,
-    "variety=V2|tiller_number": 11.95,
-    "variety=V2|leaf_area_cm2": 496.0522,
-    "variety=V2|grain_yield_kg_plot": 8.0652,
-    "variety=V2|thousand_grain_weight_g": 26.0625,
-    "variety=V2|biomass_kg_plot": 13.9833
+    "variety=V1|grain_yield_kg_plot": 7.2292,
+    "variety=V1|thousand_grain_weight_g": 25.0217,
+    "variety=V1|biomass_kg_plot": 13.5217,
+    "variety=V2|plant_height_cm": 62.8326,
+    "variety=V2|spad": 35.6615,
+    "variety=V2|tiller_number": 11.9458,
+    "variety=V2|leaf_area_cm2": 496.487,
+    "variety=V2|grain_yield_kg_plot": 8.0783,
+    "variety=V2|thousand_grain_weight_g": 26.0917,
+    "variety=V2|biomass_kg_plot": 14.0042
   },
   "parallel_ranges": {
     "S-001|spad|2026-06-15": 1.4,
     "S-004|spad|2026-06-15": 1.4,
-    "S-007|spad|2026-06-15": 1.4,
+    "S-007|spad|2026-06-15": 1.3,
     "S-010|spad|2026-06-15": 1.4,
     "S-013|spad|2026-06-15": 1.3,
-    "S-016|spad|2026-06-15": 1.4,
+    "S-016|spad|2026-06-15": 1.3,
     "S-019|spad|2026-06-15": 1.4,
     "S-022|spad|2026-06-15": 1.4,
-    "S-028|spad|2026-06-15": 1.4,
-    "S-031|spad|2026-06-15": 1.4,
-    "S-034|spad|2026-06-15": 1.4
+    "S-028|spad|2026-06-15": 1.3,
+    "S-031|spad|2026-06-15": 1.3,
+    "S-034|spad|2026-06-15": 1.3
   },
   "wide": {
     "rows": 144,
@@ -192,8 +192,8 @@
   "correction": {
     "count": 1,
     "target_id": "OB-0050",
-    "old_value": "30.9",
-    "new_value": "34.9"
+    "old_value": "30.8",
+    "new_value": "34.8"
   },
   "design": {
     "factors": [

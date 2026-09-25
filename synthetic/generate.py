@@ -154,7 +154,12 @@ def truth(combo, block, trait, phase):
         value += EFFECT[f["factor_id"]].get(lv, {}).get(trait, 0.0)
     value += BLOCK_EFFECT[block] * (1.0 + 0.1 * phase)
     # 确定性微差：让同一处理的不同小区不完全相同（模拟小区差异）
-    value += ((hash((combo, block)) % 7) - 3) * 0.06 * base * 0.02
+    #
+    # 注意：这里**不能用 Python 内置 hash()**——字符串的 hash 每个进程都不同
+    # （PYTHONHASHSEED 随机化），会让"黄金对照"每次生成的数据都不一样，
+    # 报告的期望值也就无法复现。用 sha256 取一段当稳定散列。
+    jitter = int(hashlib.sha256(f"{combo}|{block}".encode()).hexdigest()[:8], 16) % 7
+    value += (jitter - 3) * 0.06 * base * 0.02
     return value
 
 
