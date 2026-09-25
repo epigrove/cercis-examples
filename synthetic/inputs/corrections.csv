@@ -1,0 +1,2 @@
+correction_id,target_table,target_id,field,old_value,new_value,reason,source_ref
+C-000001,observations,OB-0017,value_num,34.50,38.85,誊写笔误，核对原始记录后更正（合成示例）,verify/golden

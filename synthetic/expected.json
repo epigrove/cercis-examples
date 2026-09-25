@@ -1,0 +1,104 @@
+{
+  "tables": {
+    "studies": 1,
+    "units": 12,
+    "events": 4,
+    "samples": 26,
+    "observations": 52
+  },
+  "observations": {
+    "total": 52,
+    "missing_value": 3,
+    "unique_obs_id": 52
+  },
+  "raw": {
+    "soil_n_kg_ha": {
+      "count": 11,
+      "mean": 76.2,
+      "min": 62.0,
+      "max": 88.2
+    },
+    "height_cm": {
+      "count": 12,
+      "mean": 95.45,
+      "min": 78.0,
+      "max": 109.0
+    },
+    "spad": {
+      "count": 15,
+      "mean": 40.1633,
+      "min": 34.0,
+      "max": 45.35
+    },
+    "yield_kg_plot": {
+      "count": 11,
+      "mean": 15.7,
+      "min": 5.4,
+      "max": 99.9
+    }
+  },
+  "corrected": {
+    "soil_n_kg_ha": {
+      "count": 11,
+      "mean": 76.2,
+      "min": 62.0,
+      "max": 88.2
+    },
+    "height_cm": {
+      "count": 12,
+      "mean": 95.45,
+      "min": 78.0,
+      "max": 109.0
+    },
+    "spad": {
+      "count": 15,
+      "mean": 40.4533,
+      "min": 34.0,
+      "max": 45.35
+    },
+    "yield_kg_plot": {
+      "count": 11,
+      "mean": 15.7,
+      "min": 5.4,
+      "max": 99.9
+    }
+  },
+  "treatment_means_raw": {
+    "soil_n_kg_ha": {
+      "T0": 62.0,
+      "T1": 75.0667,
+      "T2": 83.75,
+      "T3": 86.5
+    },
+    "height_cm": {
+      "T0": 80.1,
+      "T1": 92.5,
+      "T2": 102.3,
+      "T3": 106.9
+    },
+    "spad": {
+      "T0": 34.4,
+      "T1": 38.2625,
+      "T2": 42.7,
+      "T3": 43.85
+    },
+    "yield_kg_plot": {
+      "T0": 5.4,
+      "T1": 7.05,
+      "T2": 38.8167,
+      "T3": 8.65
+    }
+  },
+  "parallel_ranges": {
+    "S-017|spad|2026-07-20": 1.2,
+    "S-018|spad|2026-07-20": 1.2,
+    "S-019|spad|2026-07-20": 1.2,
+    "S-020|spad|2026-07-20": 1.2
+  },
+  "correction": {
+    "count": 1,
+    "target_id": "OB-0017",
+    "old_value": "34.50",
+    "new_value": "38.85"
+  }
+}
