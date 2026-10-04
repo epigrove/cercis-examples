@@ -103,10 +103,10 @@
     }
   },
   "by_stage": {
-    "plant_height_cm|抽穗期": 64.9383,
     "plant_height_cm|分蘖期": 64.7891,
-    "spad|抽穗期": 35.2745,
+    "plant_height_cm|抽穗期": 64.9383,
     "spad|分蘖期": 35.4724,
+    "spad|抽穗期": 35.2745,
     "tiller_number|分蘖期": 11.4638,
     "leaf_area_cm2|抽穗期": 491.8447,
     "grain_yield_kg_plot|成熟期": 7.6447,

@@ -335,7 +335,9 @@ def expected(treatments, treatment_factors, units, events, samples, obs, correct
     # 时期 × 指标
     by_stage = {}
     for t in ALL_TRAITS:
-        for stage in {stage_of(r) for r in obs if r["trait_id"] == t}:
+        # 排序后再遍历：集合的迭代顺序随进程而异，会让 expected.json 的键序抖动
+        # （内容一样但字节不同，违背"重跑得到同样的字节"）
+        for stage in sorted({stage_of(r) for r in obs if r["trait_id"] == t}):
             by_stage[f"{t}|{stage}"] = mean(values(t, False, lambda r, s=stage: stage_of(r) == s))
 
     # 因素 × 水平 × 指标（边际均值：其余因素、区组、时期的效应被平均掉）
